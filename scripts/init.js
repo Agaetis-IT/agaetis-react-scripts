@@ -19,7 +19,7 @@ const path = require('path');
 const chalk = require('chalk');
 const spawn = require('react-dev-utils/crossSpawn');
 
-module.exports = function(
+module.exports = function (
   appPath,
   appName,
   verbose,
@@ -39,9 +39,16 @@ module.exports = function(
   appPackage.scripts = {
     start: 'react-scripts start',
     build: 'react-scripts build',
+    lint: 'eslint src',
     test: 'react-scripts test --env=jsdom',
     eject: 'react-scripts eject',
   };
+
+  // Lint before commit
+  appPackage['pre-commit'] = [
+    "lint"
+  ];
+
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
@@ -91,15 +98,17 @@ module.exports = function(
 
   let command;
   let args;
+  let devArgs;
 
   if (useYarn) {
     command = 'yarnpkg';
     args = ['add'];
+    devArgs = ['add', '--dev']
   } else {
     command = 'npm';
     args = ['install', '--save', verbose && '--verbose'].filter(e => e);
+    devArgs = ['install', '--save-dev', verbose && '--verbose'].filter(e => e);
   }
-  args.push('react', 'react-dom');
 
   // Install additional template dependencies, if present
   const templateDependenciesPath = path.join(
@@ -107,27 +116,36 @@ module.exports = function(
     '.template.dependencies.json'
   );
   if (fs.existsSync(templateDependenciesPath)) {
-    const templateDependencies = require(templateDependenciesPath).dependencies;
+    const templateDependenciesFile = require(templateDependenciesPath)
+    const templateDependencies = templateDependenciesFile.dependencies;
+    const templateDevDependencies = templateDependenciesFile.devDependencies;
     args = args.concat(
       Object.keys(templateDependencies).map(key => {
         return `${key}@${templateDependencies[key]}`;
       })
     );
+    devArgs = devArgs.concat(
+      Object.keys(templateDevDependencies).map(key => {
+        return `${key}@${templateDevDependencies[key]}`;
+      })
+    );
     fs.unlinkSync(templateDependenciesPath);
   }
 
-  // Install react and react-dom for backward compatibility with old CRA cli
-  // which doesn't install react and react-dom along with react-scripts
-  // or template is presetend (via --internal-testing-template)
-  if (!isReactInstalled(appPackage) || template) {
-    console.log(`Installing react and react-dom using ${command}...`);
-    console.log();
+  // Install dependencies
+  console.log(`Installing dependencies using ${command}...`);
+  console.log();
 
-    const proc = spawn.sync(command, args, { stdio: 'inherit' });
-    if (proc.status !== 0) {
-      console.error(`\`${command} ${args.join(' ')}\` failed`);
-      return;
-    }
+  let proc = spawn.sync(command, args, { stdio: 'inherit' });
+  if (proc.status !== 0) {
+    console.error(`\`${command} ${args.join(' ')}\` failed`);
+    return;
+  }
+
+  proc = spawn.sync(command, devArgs, { stdio: 'inherit' });
+  if (proc.status !== 0) {
+    console.error(`\`${command} ${devArgs.join(' ')}\` failed`);
+    return;
   }
 
   // Display the most elegant way to cd.
@@ -183,12 +201,3 @@ module.exports = function(
   console.log();
   console.log('Happy hacking!');
 };
-
-function isReactInstalled(appPackage) {
-  const dependencies = appPackage.dependencies || {};
-
-  return (
-    typeof dependencies.react !== 'undefined' &&
-    typeof dependencies['react-dom'] !== 'undefined'
-  );
-}
