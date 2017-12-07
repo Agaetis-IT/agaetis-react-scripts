@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import logo from './logo.png'
-import './App.css'
+import './Home.css'
 
 class App extends Component {
   render () {
@@ -11,7 +11,7 @@ class App extends Component {
           <h1 className='App-title'>Welcome to React by Agaetis</h1>
         </header>
         <p className='App-intro'>
-          To get started, edit <code>src/composants/App/index.js</code> and save to reload.
+          To get started, edit <code>src/scenes/Home/index.js</code> and save to reload.
         </p>
       </div>
     )

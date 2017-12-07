@@ -1,9 +1,11 @@
 {
+    "moduleResolution": "node",
     "compilerOptions": {
-        "target": "ES6",
-        "baseUrl": "./src/"
+        "target": "es2017",
+        "baseUrl": "src/",
+        "allowSyntheticDefaultImports": true
     },
     "include": [
-        "src/**/*"
+        "src/**/*.js"
     ]
 }
