@@ -37,18 +37,16 @@ module.exports = function (
 
   // Setup the script rules
   appPackage.scripts = {
-    start: 'react-scripts start',
-    build: 'react-scripts build',
-    lint: 'eslint src',
-    test: 'react-scripts test --env=jsdom',
-    eject: 'react-scripts eject',
+    'start': 'react-scripts start',
+    'build': 'react-scripts build',
+    'lint': 'node_modules/eslint/bin/eslint.js src',
+    'lint:fix': 'node_modules/eslint/bin/eslint.js --fix src',
+    'test': 'react-scripts test --env=jsdom',
+    'eject': 'react-scripts eject',
   };
 
   // Lint before commit
-  appPackage['pre-commit'] = [
-    "lint"
-  ];
-
+  appPackage['pre-commit'] = ["lint"];
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
