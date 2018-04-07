@@ -43,10 +43,8 @@ module.exports = function (
     'lint:fix': 'node_modules/eslint/bin/eslint.js --fix src',
     'test': 'react-scripts test --env=jsdom',
     'eject': 'react-scripts eject',
+    "precommit": "yarn lint",
   };
-
-  // Lint before commit
-  appPackage['pre-commit'] = ["lint"];
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
