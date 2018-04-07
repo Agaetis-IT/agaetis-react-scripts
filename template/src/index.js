@@ -23,19 +23,4 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-if (module.hot) {
-  module.hot.accept('/src', () => {
-    ReactDOM.render(
-      <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
-          <ConnectedRouter history={history}>
-            <Routes />
-          </ConnectedRouter>
-        </MuiThemeProvider>
-      </Provider>,
-      document.getElementById('root')
-    )
-  })
-}
-
 registerServiceWorker()
