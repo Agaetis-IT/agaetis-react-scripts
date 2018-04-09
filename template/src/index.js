@@ -4,13 +4,13 @@ import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 import { MuiThemeProvider } from 'material-ui'
 
-import configureStore from './configureStore' 
+import configureStore from './configureStore'
 import theme from 'theme'
 import Routes from 'Routes'
 import registerServiceWorker from 'registerServiceWorker'
 import './index.css'
 
-const { store, history } = configureStore() 
+const { store, history } = configureStore()
 
 ReactDOM.render(
   <Provider store={store}>
@@ -20,21 +20,7 @@ ReactDOM.render(
       </ConnectedRouter>
     </MuiThemeProvider>
   </Provider>,
-  document.getElementById('root'))
-
-if (module.hot) { 
-  module.hot.accept('./App', () => { 
-    ReactDOM.render( 
-      <Provider store={store}> 
-        <MuiThemeProvider theme={theme}> 
-          <ConnectedRouter history={history}> 
-            <App /> 
-          </ConnectedRouter> 
-        </MuiThemeProvider> 
-      </Provider>, 
-      document.getElementById('root') 
-    ) 
-  }) 
-} 
+  document.getElementById('root')
+)
 
 registerServiceWorker()
